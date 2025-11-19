@@ -3,15 +3,23 @@ import re
 import polib
 from google.cloud import translate_v2 as translate
 
+# 번역 대상 언어
 TARGET_LANG = "ko"
+
+# 이 스크립트가 있는 위치 (InvenTree 루트)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# InvenTree backend 번역 파일 경로
+# ===== 프론트엔드(Platform UI) 번역 파일 경로 =====
+# 영어 원본
 EN_PO_PATH = os.path.join(
-    BASE_DIR, "src", "backend", "InvenTree", "locale", "en", "LC_MESSAGES", "django.po"
+    BASE_DIR,
+    "src", "frontend", "src", "locales", "en", "messages.po",
 )
+
+# 한국어 번역 대상
 KO_PO_PATH = os.path.join(
-    BASE_DIR, "src", "backend", "InvenTree", "locale", "ko", "LC_MESSAGES", "django.po"
+    BASE_DIR,
+    "src", "frontend", "src", "locales", "ko", "messages.po",
 )
 
 # 영문/기호만으로 된 문자열인지 확인하는 패턴
@@ -32,10 +40,12 @@ def is_likely_english(text: str) -> bool:
 
 
 def get_client() -> translate.Client:
+    """Google Translation 클라이언트 생성"""
     return translate.Client()
 
 
 def translate_texts(client: translate.Client, texts: list[str]) -> list[str]:
+    """여러 문자열을 한 번에 번역"""
     if not texts:
         return []
     results = client.translate(texts, target_language=TARGET_LANG, format_="text")
@@ -43,16 +53,23 @@ def translate_texts(client: translate.Client, texts: list[str]) -> list[str]:
 
 
 def main() -> None:
+    # 영어 파일 존재 확인
     if not os.path.exists(EN_PO_PATH):
         raise FileNotFoundError(f"영어 po 파일을 찾을 수 없음: {EN_PO_PATH}")
-    if not os.path.exists(KO_PO_PATH):
-        raise FileNotFoundError(f"한국어 po 파일을 찾을 수 없음: {KO_PO_PATH}")
 
-    print(f"영어 원본: {EN_PO_PATH}")
-    print(f"한국어 대상: {KO_PO_PATH}")
+    print(f"[frontend] 영어 원본 : {EN_PO_PATH}")
+    print(f"[frontend] 한국어 대상: {KO_PO_PATH}")
 
     en_po = polib.pofile(EN_PO_PATH)
-    ko_po = polib.pofile(KO_PO_PATH)
+
+    # 한국어 파일이 없으면 새로 만든다
+    if os.path.exists(KO_PO_PATH):
+        ko_po = polib.pofile(KO_PO_PATH)
+    else:
+        os.makedirs(os.path.dirname(KO_PO_PATH), exist_ok=True)
+        ko_po = polib.POFile()
+        ko_po.metadata = en_po.metadata.copy()
+        ko_po.metadata["Language"] = TARGET_LANG
 
     # msgid -> ko entry 매핑
     ko_map = {e.msgid: e for e in ko_po}
@@ -78,7 +95,7 @@ def main() -> None:
             ko_po.append(ko_entry)
             ko_map[en_entry.msgid] = ko_entry
 
-        # plural 이 있으면 단수/복수 둘 다 검사
+        # plural 이 있는 경우 (거의 없겠지만 안전하게 처리)
         if en_entry.msgid_plural:
             plural_strs = [
                 ko_entry.msgstr_plural.get(0, ""),
@@ -93,7 +110,11 @@ def main() -> None:
             if is_likely_english(base_text):
                 targets.append(("singular", en_entry, ko_entry))
 
-    print(f"번역 대상 엔트리 개수: {len(targets)}")
+    print(f"[frontend] 번역 대상 엔트리 개수: {len(targets)}")
+
+    if not targets:
+        print("[frontend] 새로 번역할 항목이 없습니다.")
+        return
 
     BATCH_SIZE = 50
     for i in range(0, len(targets), BATCH_SIZE):
@@ -139,10 +160,10 @@ def main() -> None:
             ko_entry.msgstr_plural[0] = singular_ko
             ko_entry.msgstr_plural[1] = plural_ko
 
-        print(f"{i + len(batch)} / {len(targets)} 개 처리 완료")
+        print(f"[frontend] {i + len(batch)} / {len(targets)} 개 처리 완료")
 
     ko_po.save(KO_PO_PATH)
-    print(f"저장 완료: {KO_PO_PATH}")
+    print(f"[frontend] 저장 완료: {KO_PO_PATH}")
 
 
 if __name__ == "__main__":
