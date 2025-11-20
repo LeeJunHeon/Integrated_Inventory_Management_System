@@ -98,7 +98,7 @@ msgstr "값이 제공되지 않음"
 #: InvenTree/conversion.py:206
 #, python-brace-format
 msgid "Could not convert {original} to {unit}"
-msgstr "{orinal}을 {unit}으로 변환할 수 없습니다."
+msgstr "{original}을 {unit}으로 변환할 수 없습니다."
 
 #: InvenTree/conversion.py:208 InvenTree/conversion.py:222
 #: InvenTree/helpers.py:555 order/models.py:720 order/models.py:1012
@@ -5638,7 +5638,7 @@ msgstr "일부 부품이 이미 할당되어 있으므로 이 부품 범주를 �
 #: part/models.py:473 part/serializers.py:119 part/serializers.py:310
 #: users/ruleset.py:28
 msgid "Parts"
-msgstr "부분품"
+msgstr "부품 목록"
 
 #: part/models.py:525
 msgid "Cannot delete this part as it is locked"
@@ -5750,7 +5750,7 @@ msgstr "부품 카테고리"
 #: part/models.py:1100 part/serializers.py:929
 #: report/templates/report/inventree_stock_location_report.html:103
 msgid "IPN"
-msgstr "아이피엔"
+msgstr "IPN"
 
 #: part/models.py:1108
 msgid "Part revision or version number"

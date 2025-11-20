@@ -65,15 +65,15 @@ msgstr "행위"
 #: src/pages/Index/Settings/UserSettings.tsx:74
 #: src/pages/part/PartDetail.tsx:1155
 msgid "Search"
-msgstr "찾다"
+msgstr "검색"
 
 #: lib/components/YesNoButton.tsx:20
 msgid "Pass"
-msgstr "통과하다"
+msgstr "성공"
 
 #: lib/components/YesNoButton.tsx:21
 msgid "Fail"
-msgstr "실패하다"
+msgstr "실패"
 
 #: lib/components/YesNoButton.tsx:43 src/tables/Filter.tsx:35
 msgid "Yes"
@@ -108,7 +108,7 @@ msgstr "부분"
 #: src/pages/part/CategoryDetail.tsx:323 src/pages/part/CategoryDetail.tsx:354
 #: src/pages/part/PartDetail.tsx:965
 msgid "Parts"
-msgstr "부분품"
+msgstr "부품"
 
 #: lib/enums/ModelInformation.tsx:37
 #: src/pages/Index/Settings/AdminCenter/PartParameterPanel.tsx:13
@@ -1585,7 +1585,7 @@ msgstr "분류되지 않음"
 #: src/components/forms/fields/IconField.tsx:211
 #: src/components/nav/Layout.tsx:138 src/tables/part/PartThumbTable.tsx:199
 msgid "Search..."
-msgstr "찾다..."
+msgstr "검색..."
 
 #: src/components/forms/fields/IconField.tsx:225
 #: src/components/wizards/ImportPartWizard.tsx:304
